@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import { UploadApiResponse } from "cloudinary";
 import { TFile } from "../app/interfaces/file";
+import config from "../config";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,9 +22,9 @@ const uploadImageToCloudinary = async (
 ): Promise<UploadApiResponse> => {
   // Configuration
   cloudinary.config({
-    cloud_name: "dv6fgvj2c",
-    api_key: "634832547442811",
-    api_secret: "_-W8sD5Tw_9E_CCMK_u_oLe5YVg", // Click 'View API Keys' above to copy your API secret
+    cloud_name: config.cloudinary.cloudinary_cloud_name,
+    api_key: config.cloudinary.cloudinary_api_key,
+    api_secret: config.cloudinary.cloudinary_api_secret, // Click 'View API Keys' above to copy your API secret
   });
 
   let uploadResult;
@@ -37,8 +38,6 @@ const uploadImageToCloudinary = async (
     console.error("Cloudinary Upload Error:", error);
     throw new Error("Failed to upload image to Cloudinary");
   }
-
-  //   console.log(uploadResult);
 
   //   Delete the image
   fs.unlink(file.path, (err) => {
