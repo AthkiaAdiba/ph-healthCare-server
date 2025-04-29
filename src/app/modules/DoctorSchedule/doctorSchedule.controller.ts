@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { DoctorScheduleService } from "./doctorSchedule.service";
 import { TAuthUser } from "../../interfaces/common";
 import pick from "../../../shared/pick";
+import { scheduleFilterableFields } from "./doctorSchedule.constants";
 
 const createDoctorSchedule = catchAsync(
   async (req: Request & { user?: TAuthUser }, res: Response) => {
@@ -45,6 +46,23 @@ const getMyAllSchedules = catchAsync(
   }
 );
 
+const getAllSchedules = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, scheduleFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await DoctorScheduleService.getAllSchedulesFromDB(
+    filters,
+    options
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Doctor Schedules are retrieval successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 const deleteMySchedule = catchAsync(
   async (req: Request & { user?: TAuthUser }, res: Response) => {
     const user = req.user;
@@ -68,4 +86,5 @@ export const DoctorScheduleController = {
   createDoctorSchedule,
   getMyAllSchedules,
   deleteMySchedule,
+  getAllSchedules,
 };

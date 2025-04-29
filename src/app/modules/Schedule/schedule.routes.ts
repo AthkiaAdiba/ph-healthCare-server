@@ -13,4 +13,16 @@ router.post(
   ScheduleControllers.addSchedule
 );
 
+router.get(
+  "/:id",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR),
+  ScheduleControllers.getSingleSchedule
+);
+
+router.delete(
+  "/:id",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  ScheduleControllers.deleteSchedule
+);
+
 export const ScheduleRoutes = router;
